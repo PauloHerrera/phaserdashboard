@@ -9,6 +9,7 @@ var loadState = {
 
         //CAREGA ITENS DO JOGO
         game.load.spritesheet('personagem', 'assets/images/personagem.png', 43, 65);
+        game.load.spritesheet('personagem2', 'assets/images/personagem.png', 43, 65);
         game.load.spritesheet('mute', 'assets/images/muteButton.png', 28, 22);
 
         //fase 01

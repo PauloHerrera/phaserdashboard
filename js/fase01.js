@@ -49,10 +49,16 @@ var fase01State = {
         game.physics.arcade.overlap(this.player, this.food, this.collectFood, null, this);
         
         this.movePlayer();
-
-        if (this.player.position.x > 1820 && this.player.position.x < 1850 && cursors.down.isDown) {            
-            game.state.start('fase02');
+       
+        if (this.player.position.x > 1820 && this.player.position.x < 1850 && cursors.down.isDown) {
+            this.player.kill();
+            game.state.add('fase02', fase02State, true);
+            //game.state.start('fase02', true, true);
         }            
+    },
+    shutdown: function (){
+        this.player.destroy();
+        alert("niiice!");
     },
     movePlayer: function () {
 

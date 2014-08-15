@@ -1,150 +1,264 @@
 var fase02State = {
-    create: function () {
 
-        game.world.setBounds(0, 0, 1900, 500);        
-        var cave = game.add.tileSprite(0, 0, 1900, 600, 'cave');
-                    
-        // Sons
-        this.eatSound = game.add.audio('eat');
-        this.jumpSound = game.add.audio('jump');
+    preload: function () {
+        game.load.image('cave', 'assets/images/cave/cave_background01.png');
+    
+    game.load.image('ground', 'assets/images/cave/ground_cave.png');
+    //game.load.image('star', 'assets/star.png');
+    //game.load.image('diamond', 'assets/diamond.png');
 
-        this.createPlataforms();
 
-        this.createItens();      
+    game.load.image('frango', 'assets/th/ico-frango.png');
+    game.load.image('batata', 'assets/th/ico-batata2.png');
+    game.load.image('refri', 'assets/th/ico-refri.png');
+    game.load.image('sandwich', 'assets/th/ico-sanduba.png');
+    game.load.image('rosquinha01', 'assets/th/ico-rosq1.png');
+    game.load.image('rosquinha02', 'assets/th/ico-rosq2.png');
+    game.load.image('rosquinha03', 'assets/th/ico-rosq3.png');
 
-        // Insere o DUDE!
-        this.player = game.add.sprite(110, game.world.height - 120, 'personagem');
-        game.physics.arcade.enable(this.player);
-        this.player.body.bounce.y = 0.2;
-        this.player.body.gravity.y = 300;
-        this.player.body.collideWorldBounds = true;
-        this.player.animations.add('left', [0, 1, 2, 3], 10, true);
-        this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+    game.load.image('plataform', 'assets/images/cave/platform_rock_three_tiles.png');
+    game.load.image('plataform_one_tile', 'assets/images/cave/platform_rock_one_tile.png');
+    game.load.image('hole', 'assets/holeskull.png');
 
-        // Adiciona o teclado
-        cursors = game.input.keyboard.createCursorKeys();
+    //game.load.image('exit', 'assets/signExit.png');
 
-        hole = game.add.sprite(1610, 0, 'skull_enter');
-        hole.enableBody = true;
+    //game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+    game.load.spritesheet('dude', 'assets/th/personagem.png', 43, 65);
 
-        //SCORE
-        this.scoreText = game.add.text(16, 16, 'Pontos: 0', { fontSize: '32px', fill: '#000' });
-        this.scoreText.fixedToCamera = true;
+    //game.load.audio('hit', ['assets/hit.wav']);
+    //game.load.audio('pickup', ['assets/pickup.wav']);
+},
+create: function () {
 
-        game.camera.follow(this.player);
-    },
-    update: function () {       
+    game.world.setBounds(0, 0, 1900, 500);
 
-        game.physics.arcade.collide(this.player, this.platforms);
+    game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        game.physics.arcade.collide(this.food, this.platforms);
-        game.physics.arcade.overlap(this.player, this.food, this.collectFood, null, this);
+    //Cria o background - Céu
+    //var sky = game.add.sprite(0, 0, 'sky');
+    var cave = game.add.tileSprite(0, 0, 1900, 600, 'cave');
+    //sky.fixedToCamera = true;                
 
-        this.movePlayer();
-        //&& cursors.up.isDown
-        if (this.player.position.x > 1645 && this.player.position.x < 1680 &&
-            this.player.position.y > 75 && this.player.position.y < 80) {
-            console.log("X" + this.player.position.x);
-            console.log("Y" + this.player.position.y);
-              game.state.start('fase01');
-        }
+    platforms = game.add.group();
+    platforms.enableBody = true;
 
-    },
-    createPlataforms: function () {
-        this.platforms = game.add.group();
-        this.platforms.enableBody = true;
+    //ledge = platforms.create(130, 350, 'lava');
+    //ledge.body.immovable = true;
 
-        var ground = this.platforms.create(0, game.world.height - 44, 'ground_cave');
-        ground.scale.setTo(1, 1);
+    var ground = platforms.create(0, game.world.height - 44, 'ground');
+    ground.scale.setTo(1, 1);
+    ground.body.immovable = true;
 
-        game.add.sprite(-130, 150, 'rock_plataform', 0, this.platforms);
-        game.add.sprite(340, 300, 'rock_plataform', 0, this.platforms);
-        game.add.sprite(600, 120, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(900, 300, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(1100, 200, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(1300, 100, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(1650, 300, 'rock_plataform', 0, this.platforms);
+    ledge = platforms.create(340, 300, 'plataform');
+    ledge.body.immovable = true;
+        
+    ledge = platforms.create(600, 120, 'plataform_one_tile');
+    ledge.body.immovable = true;
 
-        this.platforms.setAll('body.immovable', true);
+    ledge = platforms.create(900, 300, 'plataform_one_tile');
+    ledge.body.immovable = true;
 
-    },
-    movePlayer: function () {
-        if (cursors.left.isDown) {
+    ledge = platforms.create(1100, 200, 'plataform_one_tile');
+    ledge.body.immovable = true;
 
-            this.player.body.velocity.x = -game.global.playerSpeed;
-            this.player.animations.play('left');
-        }
-        else if (cursors.right.isDown) {
+    ledge = platforms.create(1300, 100, 'plataform_one_tile');
+    ledge.body.immovable = true;
 
-            this.player.body.velocity.x = game.global.playerSpeed;
-            this.player.animations.play('right');
-        }
-        else {
 
-            this.player.body.velocity.x = 0;
-            this.player.animations.stop();
-            this.player.frame = 4;
-        }
+    ledge = platforms.create(1650, 300, 'plataform');
+    ledge.body.immovable = true;
 
-        if (cursors.up.isDown && this.player.body.touching.down) {
-            if (game.global.sound) this.jumpSound.play();
-            this.player.body.velocity.y = -game.global.jumpSize;;
-        }
-    },
-    createItens: function () {
-        //Rosquinhas
-        this.food = game.add.group();
-        this.food.enableBody = true;
 
-        game.add.sprite(40, 0, 'rosquinha01', 0, this.food);
-        game.add.sprite(160, 0, 'rosquinha03', 0, this.food);
-        game.add.sprite(350, 0, 'rosquinha02', 0, this.food);
-        game.add.sprite(470, 0, 'rosquinha02', 0, this.food);        
-        game.add.sprite(900, 0, 'rosquinha02', 0, this.food);
-        game.add.sprite(1000, 0, 'rosquinha01', 0, this.food);
-        game.add.sprite(1100, 0, 'rosquinha03', 0, this.food);
+    //Rosquinhas
+    rosquinhas = game.add.group();
+    rosquinhas.enableBody = true;
 
-        game.add.sprite(410, 0, 'refri', 0, this.food);
-        game.add.sprite(1520, 0, 'refri', 0, this.food);
+    var r1 = new Array();
+    r1[0] = rosquinhas.create(40, 0, 'rosquinha01');
+    r1[0].body.gravity.y = 60;
+    r1[0].body.bounce.y = 0.4;
 
-        game.add.sprite(700, 0, 'sandwich', 0, this.food);
-        game.add.sprite(1310, 0, 'sandwich', 0, this.food);
-        game.add.sprite(1820, 0, 'sandwich', 0, this.food);
+    r1[1] = rosquinhas.create(160, 0, 'rosquinha03');
+    r1[1].body.gravity.y = 60;
+    r1[1].body.bounce.y = 0.4;
 
-        game.add.sprite(610, 0, 'frango', 0, this.food);
-        game.add.sprite(1180, 0, 'frango', 0, this.food);
-        game.add.sprite(1260, 0, 'frango', 0, this.food);
-        game.add.sprite(1650, 0, 'frango', 0, this.food);
-        game.add.sprite(1750, 0, 'frango', 0, this.food);
+    r1[2] = rosquinhas.create(470, 0, 'rosquinha02');
+    r1[2].body.gravity.y = 60;
+    r1[2].body.bounce.y = 0.4;
 
-        game.add.sprite(800, 0, 'batata', 0, this.food);
-        game.add.sprite(1430, 0, 'batata', 0, this.food);
+    r1[6] = rosquinhas.create(350, 0, 'rosquinha02');
+    r1[6].body.gravity.y = 60;
+    r1[6].body.bounce.y = 0.4;
 
-        this.food.setAll('body.gravity.y', 60);
-        this.food.setAll('body.bounce.y', 0.4);
 
-    },
-    collectFood: function (a, b) {
-        if (game.global.sound) this.eatSound.play();
-        b.kill();
-        game.global.score += this.getPoints(b.key);
-        this.scoreText.text = 'Pontos: ' + game.global.score;
-    },
-    getPoints: function (foodType) {
-        switch (foodType) {
-            case 'rosquinha01':
-            case 'rosquinha02':
-            case 'rosquinha03':
-                return 30;
-            case 'frango':
-                return 70;
-            case 'sandwich':
-                return 100;
-            case 'batata':
-                return 90;
-            case 'refri':
-            default:
-                return 10;
-        }
+    r1[3] = rosquinhas.create(900, 0, 'rosquinha02');
+    r1[3].body.gravity.y = 60;
+    r1[3].body.bounce.y = 0.4;
+    r1[4] = rosquinhas.create(1000, 0, 'rosquinha01');
+    r1[4].body.gravity.y = 60;
+    r1[4].body.bounce.y = 0.4;
+    r1[5] = rosquinhas.create(1100, 0, 'rosquinha03');
+    r1[5].body.gravity.y = 60;
+    r1[5].body.bounce.y = 0.4;
+
+    //Refri
+    refris = game.add.group();
+    refris.enableBody = true;
+
+    var ref = new Array();
+    ref[0] = refris.create(410, 0, 'refri');
+    ref[0].body.gravity.y = 40;
+    ref[0].body.bounce.y = 0.4;
+
+    ref[1] = refris.create(1520, 0, 'refri');
+    ref[1].body.gravity.y = 40;
+    ref[1].body.bounce.y = 0.4;
+
+    //Hamburger
+    hamburgers = game.add.group();
+    hamburgers.enableBody = true;
+
+    var hamburger = new Array();
+    hamburger[0] = hamburgers.create(700, 0, 'sandwich');
+    hamburger[0].body.gravity.y = 40;
+    hamburger[0].body.bounce.y = 0.4;
+
+    hamburger[1] = hamburgers.create(1310, 0, 'sandwich');
+    hamburger[1].body.gravity.y = 40;
+    hamburger[1].body.bounce.y = 0.4;
+
+    hamburger[2] = hamburgers.create(1820, 0, 'sandwich');
+    hamburger[2].body.gravity.y = 10;
+    hamburger[2].body.bounce.y = 0.4;
+
+    //Frango
+    frangos = game.add.group();
+    frangos.enableBody = true;
+
+    var frango = new Array();
+    frango[0] = frangos.create(610, 0, 'frango');
+    frango[0].body.gravity.y = 40;
+    frango[0].body.bounce.y = 0.4;
+
+    frango[1] = frangos.create(1180, 0, 'frango');
+    frango[1].body.gravity.y = 40;
+    frango[1].body.bounce.y = 0.4;
+
+    frango[2] = frangos.create(1260, 0, 'frango');
+    frango[2].body.gravity.y = 40;
+    frango[2].body.bounce.y = 0.4;
+
+    frango[3] = frangos.create(1650, 0, 'frango');
+    frango[3].body.gravity.y = 40;
+    frango[3].body.bounce.y = 0.4;
+
+    frango[4] = frangos.create(1750, 0, 'frango');
+    frango[4].body.gravity.y = 40;
+    frango[4].body.bounce.y = 0.4;
+
+    //Batata Frita
+    batatas = game.add.group();
+    batatas.enableBody = true;
+
+    var batata = new Array();
+    batata[0] = batatas.create(800, 0, 'batata');
+    batata[0].body.gravity.y = 40;
+    batata[0].body.bounce.y = 0.4;
+
+    batata[1] = batatas.create(1430, 0, 'batata');
+    batata[1].body.gravity.y = 40;
+    batata[1].body.bounce.y = 0.4;
+
+
+    // Insere o DUDE!
+    player = game.add.sprite(110, 30 , 'dude');
+    game.physics.arcade.enable(player);
+    player.body.bounce.y = 0.2;
+    player.body.gravity.y = 300;
+    player.body.collideWorldBounds = true;               
+    player.animations.add('left', [0, 1, 2, 3], 10, true);
+    player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+    hole = game.add.sprite(1610, 0, 'hole');
+    hole.enableBody = true;
+
+    //exit = game.add.sprite(610, 0, 'exit');
+    //exit.enableBody = true;
+        
+    // Adiciona o teclado
+    cursors = game.input.keyboard.createCursorKeys();
+
+
+    //SCORE
+    this.scoreText = game.add.text(16, 16, 'Pontos: ' + game.global.score, { fontSize: '32px', fill: '#000' });
+    this.scoreText.fixedToCamera = true;
+    game.camera.follow(player);
+},
+
+update: function () {       
+
+    var playerSpeed = 150;
+
+    game.physics.arcade.collide(player, platforms);
+
+    player.body.velocity.x = 0;
+
+    //
+    if (cursors.left.isDown) {
+        player.body.velocity.x = -playerSpeed;
+        player.animations.play('left');
     }
+    else if (cursors.right.isDown) {
+        player.body.velocity.x = playerSpeed;
+        player.animations.play('right');
+    }
+    else {
+        player.animations.stop();
+        player.frame = 4;
+    }
+
+    if (cursors.up.isDown && player.body.touching.down) {
+        player.body.velocity.y = -350;
+    }
+
+    game.physics.arcade.collide(rosquinhas, platforms);
+    game.physics.arcade.overlap(player, rosquinhas, this.collectRosquinhas, null, this);
+
+    game.physics.arcade.collide(hamburgers, platforms);
+    game.physics.arcade.overlap(player, hamburgers, this.collectHamburgers, null, this);
+
+    game.physics.arcade.collide(refris, platforms);
+    game.physics.arcade.overlap(player, refris, this.collectRefris, null, this);
+
+    game.physics.arcade.collide(frangos, platforms);
+    game.physics.arcade.overlap(player, frangos, this.collectFrangos, null, this);
+
+    game.physics.arcade.collide(batatas, platforms);
+    game.physics.arcade.overlap(player, batatas, this.collectBatatas, null, this);
+},
+collectHamburgers: function (a, b) {
+    b.kill();
+    game.global.score += 100;
+    this.scoreText.text = 'Pontos: ' + game.global.score;
+},
+collectBatatas: function (a, b) {
+    b.kill();
+    game.global.score += 90;
+    this.scoreText.text = 'Pontos: ' + game.global.score;
+},
+collectFrangos: function (a, b) {
+    b.kill();
+    game.global.score += 70;
+    this.scoreText.text = 'Pontos: ' + game.global.score;
+},
+collectRefris: function (a, b) {
+    b.kill();
+    game.global.score += 10;
+    this.scoreText.text = 'Pontos: ' + game.global.score;
+},
+collectRosquinhas: function (a, b) {
+    b.kill();
+    game.global.score += 30;
+    this.scoreText.text = 'Pontos: ' + game.global.score;
+},
 };
