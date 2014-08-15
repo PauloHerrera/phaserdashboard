@@ -56,7 +56,7 @@ var menuState = {
         }
     },
     Start: function () {        
-        game.state.start('fase01');
+        game.state.start('fase02');
     },    
     ToggleSound: function () {      
         game.global.sound = !game.global.sound;        

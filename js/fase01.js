@@ -1,4 +1,3 @@
-
 var fase01State = {
     create: function () {
 
@@ -51,9 +50,8 @@ var fase01State = {
         
         this.movePlayer();
 
-        if (this.player.position.x > 1820 && this.player.position.x < 1850 && cursors.down.isDown) {
-            console.log(this.player.position.x);
-            game.state.add('state_02', state_02, true);
+        if (this.player.position.x > 1820 && this.player.position.x < 1850 && cursors.down.isDown) {            
+            game.state.start('fase02');
         }            
     },
     movePlayer: function () {

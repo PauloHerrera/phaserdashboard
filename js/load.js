@@ -11,11 +11,19 @@ var loadState = {
         game.load.spritesheet('personagem', 'assets/images/personagem.png', 43, 65);
         game.load.spritesheet('mute', 'assets/images/muteButton.png', 28, 22);
 
+        //fase 01
         game.load.image('sky', 'assets/images/sky.png');
         game.load.image('plataform', 'assets/images/platform_wood.png');
         game.load.image('ground', 'assets/images/grass.png');
         game.load.image('hole', 'assets/images/role.png');
 
+        //fase 02 - caverna 01
+        game.load.image('cave', 'assets/images/cave/cave_background01.png');
+        game.load.image('ground_cave', 'assets/images/cave/ground_cave.png');
+        game.load.image('skull_enter', 'assets/images/cave/holeskull.png');
+        game.load.image('rock_plataform', 'assets/images/cave/platform_rock_three_tiles.png');
+        game.load.image('rock_plataform_small', 'assets/images/cave/platform_rock_one_tile.png');
+        
         //Itens
         game.load.image('frango', 'assets/images/itens/ico-frango.png');
         game.load.image('batata', 'assets/images/itens/ico-batata2.png');
