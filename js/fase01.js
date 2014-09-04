@@ -58,7 +58,7 @@ var fase01State = {
     },
     shutdown: function (){
         this.player.destroy();
-        alert("niiice!");
+     //   alert("niiice!");
     },
     movePlayer: function () {
 

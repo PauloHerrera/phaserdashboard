@@ -1,33 +1,35 @@
-var menuState = {
+var gameoverState = {
     create: function() {
         // Add a background image
         //game.add.image(0, 0, 'background');
-        
+
         //Music
-        if (game.global.sound) {
-            this.music = game.add.audio('background_music'); // Add the music
-            this.music.loop = true; // Make it loop
-            this.music.volume = 0.5;
-            this.music.play(); // Start the music
-        }
+        //if (game.global.sound) {
+        //    this.music = game.add.audio('background_music'); // Add the music
+        //    this.music.loop = true; // Make it loop
+        //    this.music.volume = 0.5;
+        //    this.music.play(); // Start the music
+        //}
 
-        // Nome Do jogo
-        var nameLabel = game.add.text(game.world.centerX, -50, 'Fat Holless', { font: '70px Geo', fill: '#ffffff' });
-        nameLabel.anchor.setTo(0.5, 0.5);        
-        var tween = game.add.tween(nameLabel);        
-        game.add.tween(nameLabel).to({ y: 100 }, 1000).easing(Phaser.Easing.Bounce.Out).start();
+        game.stage.backgroundColor = '#aaa';
+
+        //// Nome Do jogo
+        this.nameLabel = game.add.text(game.world.centerX, 150, 'GAME OVER', { font: '70px Arial', fill: '#ffffff' });
+        this.nameLabel.anchor.setTo(0.5, 0.5);
+        //var tween = game.add.tween(nameLabel);        
+        //game.add.tween(nameLabel).to({ y: 100 }, 1000).easing(Phaser.Easing.Bounce.Out).start();
         
-        //START LABEL
-        var startLabel = game.add.text(game.world.centerX, game.world.height - 80, 'aperte a tecla ENTER para começar',            { font: '25px Arial', fill: '#ffffff' });
-        game.add.tween(startLabel).to({ angle: -2 }, 500).to({ angle: 2 }, 500).loop().start();
-        startLabel.anchor.setTo(0.5, 0.5);
+        ////START LABEL
+        //var startLabel = game.add.text(game.world.centerX, game.world.height - 80, 'aperte a tecla ENTER para começar',            { font: '25px Arial', fill: '#ffffff' });
+        //game.add.tween(startLabel).to({ angle: -2 }, 500).to({ angle: 2 }, 500).loop().start();
+        //startLabel.anchor.setTo(0.5, 0.5);
 
-        var enterKey = game.input.keyboard.addKey(13);
-        enterKey.onDown.addOnce(this.Start, this);
+        //var enterKey = game.input.keyboard.addKey(13);
+        //enterKey.onDown.addOnce(this.Start, this);
 
         this.VerifyScore();
 
-        this.VerifySound();    
+        this.VerifySound();        
 
     },
     VerifyScore: function () {
@@ -60,8 +62,7 @@ var menuState = {
         }
     },
     Start: function () {        
-        game.state.start('fase04');
-
+        game.state.start('fase03');
     },    
     ToggleSound: function () {      
         game.global.sound = !game.global.sound;        

@@ -11,6 +11,8 @@ var loadState = {
         game.load.spritesheet('personagem', 'assets/images/personagem.png', 43, 65);
         game.load.spritesheet('personagem2', 'assets/images/personagem.png', 43, 65);
         game.load.spritesheet('mute', 'assets/images/muteButton.png', 28, 22);
+        game.load.image('pixel', 'assets/images/pixel.png');
+        game.load.image('heart', 'assets/images/heart.png');
 
         //fase 01
         game.load.image('sky', 'assets/images/sky.png');
@@ -37,6 +39,16 @@ var loadState = {
         game.load.audio('eat', ['assets/sound/eat.ogg', 'assets/sound/eat.mp3']);
         game.load.audio('jump', ['assets/sound/jump.ogg', 'assets/sound/jump.mp3']);
         game.load.audio('background_music', ['assets/sound/background_music.ogg', 'assets/sound/background_music.mp3']);
+        game.load.audio('dead', ['assets/sound/dead.ogg', 'assets/sound/dead.mp3']);
+
+
+        // Fase com o Tilemap        
+        game.load.image('nuvens', 'assets/images/nuvens.png');
+        game.load.image('grama_tileset', 'assets/images/grama_tileset.png');
+        game.load.image('spine', 'assets/images/spine.png');
+        game.load.image('tree', 'assets/images/tree.png');
+        game.load.tilemap('map01', 'assets/images/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+
 
         //game.load.spritesheet('player', 'assets/player2.png', 20, 20);
         //game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
