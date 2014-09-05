@@ -4,51 +4,89 @@ var fase02State = {
     },
     create: function () {
 
-        game.world.setBounds(0, 0, 1900, 500);
-        var cave = game.add.tileSprite(0, 0, 1900, 600, 'cave');       
+        //MAPA
+        //Adiciona o Mapa
+        this.map = game.add.tilemap('map');
+        
+        this.map.addTilesetImage('fase_caverna', 'fase_caverna');
+        this.map.addTilesetImage('flame', 'flame');
+        this.map.addTilesetImage('skull01', 'skull01');
+        this.map.addTilesetImage('atocha', 'atocha');
+        this.map.addTilesetImage('spine', 'spine');
+
+        this.layerBackground = this.map.createLayer('Background');
+        this.layerBackground.resizeWorld();
+
+        this.layerPlataforms = this.map.createLayer('Plataformas');
+        this.layerPlataforms.resizeWorld();
+        this.map.setCollision(2, true, this.layerPlataforms);
+        this.map.setCollision(3, true, this.layerPlataforms);
+        this.map.setCollision(6, true, this.layerPlataforms);
+        this.map.setCollision(7, true, this.layerPlataforms);
+        this.map.setCollision(9, true, this.layerPlataforms);
+
+        this.layerKillPlayer = this.map.createLayer('Objetos Tira Vida');
+        this.layerKillPlayer.resizeWorld();
+        this.map.setTileIndexCallback(21, this.losingLife, this, this.layerKillPlayer);
+        this.map.setTileIndexCallback(22, this.losingLife, this, this.layerKillPlayer);
+
+        this.layerObjetos = this.map.createLayer('Objetos Decorativos');
+        this.layerObjetos.resizeWorld();
 
         // Sons
         this.eatSound = game.add.audio('eat');
-        this.jumpSound = game.add.audio('jump');                           
+        this.jumpSound = game.add.audio('jump');
+        this.deadSound = game.add.audio('dead');
 
-        this.createPlataforms();   
         this.createItens();
-        
+                
+        hole = game.add.sprite(6100, 610, 'skull_enter');
+        hole.enableBody = true;
+
         // Adiciona o teclado
         cursors = game.input.keyboard.createCursorKeys();
+               
+        // Insere o Personagem
+        this.player = game.add.sprite(110, game.world.height - 240, 'personagem');
+       // this.player = game.add.sprite(5900, game.world.height - 240, 'personagem');
 
-        // Insere o DUDE!
-        this.player = game.add.sprite(110, game.world.height - 120, 'personagem');
         game.physics.arcade.enable(this.player);
         this.player.body.bounce.y = 0.2;
         this.player.body.gravity.y = 300;
-        this.player.body.collideWorldBounds = true;
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
-
-        hole = game.add.sprite(1610, 0, 'skull_enter');
-        hole.enableBody = true;
+        this.player.body.collideWorldBounds = true;
+        this.layerForeground = this.map.createLayer('Foreground');
+        this.layerForeground.resizeWorld();
 
         game.camera.follow(this.player);
+
+       
 
         //SCORE
         this.scoreText = game.add.text(16, 16, 'Pontos: ' + game.global.score, { fontSize: '32px', fill: '#000' });
         this.scoreText.fixedToCamera = true;
         
+        this.createParticles();
     },
     update: function () {               
 
-        game.physics.arcade.collide(this.player, this.platforms);
+        game.physics.arcade.collide(this.player, this.layerPlataforms);
+        game.physics.arcade.collide(this.player, this.layerKillPlayer);
 
-        game.physics.arcade.collide(this.food, this.platforms);
+        game.physics.arcade.collide(this.food, this.layerPlataforms);
         game.physics.arcade.overlap(this.player, this.food, this.collectFood, null, this);
         
         this.movePlayer();
         
-        if (this.player.position.x > 1640 && this.player.position.x < 1680 && this.player.position.y < 80) {
-            this.player.kill();                        
-            game.state.add('fase03', fase03State, true);            
-        }
+        console.log(this.player.position.x);
+        console.log(this.player.position.y);
+
+
+        //if (this.player.position.x > 1640 && this.player.position.x < 1680 && this.player.position.y < 80) {
+        //    this.player.kill();                        
+        //    game.state.add('fase03', fase03State, true);            
+        //}
     },
     movePlayer: function () {
 
@@ -69,59 +107,109 @@ var fase02State = {
             this.player.frame = 4;
         }
 
-        if (cursors.up.isDown && this.player.body.touching.down) {
+        if (cursors.up.isDown && this.player.body.onFloor()) {
             if (game.global.sound) this.jumpSound.play();
             this.player.body.velocity.y = -game.global.jumpSize;;
         }
+    },   
+    createParticles: function () {
+        // Particulas para quando ele morrer
+        this.emitter = game.add.emitter(0, 0, 15);
+        this.emitter.makeParticles('pixel');
+        this.emitter.setYSpeed(-150, 150);
+        this.emitter.setXSpeed(-150, 150);
+        this.emitter.gravity = 0;
     },
-    createPlataforms: function () {
-        this.platforms = game.add.group();
-        this.platforms.enableBody = true;
+    losingLife: function (a, b) {
+        this.playerDie();
+        ////console.log(this.lifeCount);
+        //this.lifeCount--;
+        //this.life[this.lifeCount].kill();
 
-        var ground = this.platforms.create(0, game.world.height - 44, 'ground_cave');
-        ground.scale.setTo(1, 1);               
+        //var teste = 0;
 
-        game.add.sprite(340, 300, 'rock_plataform', 0, this.platforms);
-        game.add.sprite(600, 120, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(900, 300, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(1100, 200, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(1300, 100, 'rock_plataform_small', 0, this.platforms);
-        game.add.sprite(1650, 300, 'rock_plataform', 0, this.platforms);
+        //if (this.cursor.left.isDown || this.wasd.left.isDown) {
+        //    teste = 30;
+        //}
+        //else if (this.cursor.right.isDown || this.wasd.right.isDown) {
+        //    teste = -30;
+        //}
 
-        this.platforms.setAll('body.immovable', true);
+        ////console.log(b);
+        ////console.log(teste);        
+        //var teste2 = a.body.position.x + teste
+        ////console.log(teste2);
+        //a.body.position.x = teste2;
+
+        //if (this.lifeCount == 0) {
+        //    this.playerDie();
+        //} else {
+        //    console.log(this.player.position.x);
+        //    //this.player.position.x = this.player.position.x - 10;
+        //}
+
+    },
+    playerDie: function () {
+
+        if (!this.player.alive) {
+            return;
+        }
+
+        this.player.kill();
+        game.global.music.stop();
+        this.deadSound.play();
+        this.emitter.x = this.player.x;
+        this.emitter.y = this.player.y;
+        this.emitter.start(true, 600, null, 15);
+
+        // Call the 'startMenu' function in 1000ms
+        game.time.events.add(1000, this.startMenu, this);
+    },
+    startMenu: function () {
+        game.state.start('menu');
     },
     createItens: function () {
-        //Rosquinhas
         this.food = game.add.group();
         this.food.enableBody = true;
 
-        game.add.sprite(40, 0, 'rosquinha01', 0, this.food);
-        game.add.sprite(160, 0, 'rosquinha03', 0, this.food);
-        game.add.sprite(470, 0, 'rosquinha02', 0, this.food);
-        game.add.sprite(350, 0, 'rosquinha02', 0, this.food);
-        game.add.sprite(900, 0, 'rosquinha01', 0, this.food);
-        game.add.sprite(1000, 0, 'rosquinha03', 0, this.food);
-        game.add.sprite(1100, 0, 'rosquinha03', 0, this.food);
+        game.add.sprite(705, 300, 'rosquinha03', 0, this.food);
 
-        game.add.sprite(410, 0, 'refri', 0, this.food);
-        game.add.sprite(1520, 0, 'refri', 0, this.food);
+        game.add.sprite(5245, 370, 'rosquinha03', 0, this.food);
+        game.add.sprite(5370, 370, 'rosquinha01', 0, this.food);
+        game.add.sprite(5500, 370, 'rosquinha02', 0, this.food);
+        game.add.sprite(5630, 370, 'rosquinha03', 0, this.food);
+        game.add.sprite(5755, 370, 'rosquinha01', 0, this.food);
+        game.add.sprite(5885, 370, 'rosquinha02', 0, this.food);
 
-        game.add.sprite(700, 0, 'sandwich', 0, this.food);
-        game.add.sprite(1310, 0, 'sandwich', 0, this.food);
-        game.add.sprite(1820, 0, 'sandwich', 0, this.food);
+        game.add.sprite(2355, 50, 'sandwich', 0, this.food);
+        game.add.sprite(2610, 435, 'sandwich', 0, this.food);
 
-        game.add.sprite(610, 0, 'frango', 0, this.food);
-        game.add.sprite(1180, 0, 'frango', 0, this.food);
-        game.add.sprite(1260, 0, 'frango', 0, this.food);
-        game.add.sprite(1650, 0, 'frango', 0, this.food);
-        game.add.sprite(1750, 0, 'frango', 0, this.food);
 
-        game.add.sprite(800, 0, 'batata', 0, this.food);
-        game.add.sprite(1430, 0, 'batata', 0, this.food);
+        game.add.sprite(1870, 50, 'frango', 0, this.food);
+        game.add.sprite(1970, 50, 'frango', 0, this.food);
+        game.add.sprite(2070, 50, 'frango', 0, this.food);
+        game.add.sprite(2170, 50, 'frango', 0, this.food);
+
+
+        game.add.sprite(5115, 370, 'refri', 0, this.food);
+        game.add.sprite(1150, 460, 'refri', 0, this.food);
+
+        game.add.sprite(1200, 460, 'batata', 0, this.food);
+        game.add.sprite(2265, 50, 'batata', 0, this.food);
+
+        //game.add.sprite(750, 1000, 'rosquinha02', 0, this.food);
+
+
+        //game.add.sprite(3140, 955, 'rosquinha01', 0, this.food);
+        //game.add.sprite(3140, 800, 'rosquinha02', 0, this.food);
+        //game.add.sprite(3140, 650, 'rosquinha03', 0, this.food);
+        //game.add.sprite(3140, 505, 'rosquinha01', 0, this.food);
+        //game.add.sprite(3140, 348, 'rosquinha02', 0, this.food);
+
+        //game.add.sprite(3140, 150, 'sandwich', 0, this.food);
 
         this.food.setAll('body.gravity.y', 60);
         this.food.setAll('body.bounce.y', 0.4);
-
     },
     collectFood: function (a, b) {
         if (game.global.sound) this.eatSound.play();

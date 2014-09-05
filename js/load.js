@@ -13,6 +13,7 @@ var loadState = {
         game.load.spritesheet('mute', 'assets/images/muteButton.png', 28, 22);
         game.load.image('pixel', 'assets/images/pixel.png');
         game.load.image('heart', 'assets/images/heart.png');
+        game.load.image('background', 'assets/images/bg-menu.png');
 
         //fase 01
         game.load.image('sky', 'assets/images/sky.png');
@@ -21,11 +22,10 @@ var loadState = {
         game.load.image('hole', 'assets/images/role.png');
 
         //fase 02 - caverna 01
-        game.load.image('cave', 'assets/images/cave/cave_background01.png');
-        game.load.image('ground_cave', 'assets/images/cave/ground_cave.png');
-        game.load.image('skull_enter', 'assets/images/cave/holeskull.png');
-        game.load.image('rock_plataform', 'assets/images/cave/platform_rock_three_tiles.png');
-        game.load.image('rock_plataform_small', 'assets/images/cave/platform_rock_one_tile.png');
+        //game.load.image('cave', 'assets/images/cave/cave_background01.png');
+        //game.load.image('ground_cave', 'assets/images/cave/ground_cave.png');        
+        //game.load.image('rock_plataform', 'assets/images/cave/platform_rock_three_tiles.png');
+        //game.load.image('rock_plataform_small', 'assets/images/cave/platform_rock_one_tile.png');
         
         //Itens
         game.load.image('frango', 'assets/images/itens/ico-frango.png');
@@ -42,12 +42,23 @@ var loadState = {
         game.load.audio('dead', ['assets/sound/dead.ogg', 'assets/sound/dead.mp3']);
 
 
-        // Fase com o Tilemap        
+        // Fase 01   
         game.load.image('nuvens', 'assets/images/nuvens.png');
         game.load.image('grama_tileset', 'assets/images/grama_tileset.png');
         game.load.image('spine', 'assets/images/spine.png');
         game.load.image('tree', 'assets/images/tree.png');
+        game.load.image('woodPlatform1', 'assets/images/woodPlatform1.png');
         game.load.tilemap('map01', 'assets/images/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+
+
+        // Fase Caverna 01
+        game.load.image('flame', 'assets/images/cave/flame.png');
+        game.load.image('fase_caverna', 'assets/images/cave/fase_caverna.png');
+        game.load.image('skull01', 'assets/images/cave/skull01.png');
+        game.load.image('skull_enter', 'assets/images/cave/skull_enter.png');
+        game.load.image('atocha', 'assets/images/cave/atocha.png');
+
+        game.load.tilemap('map', 'assets/images/cave/tilemapCave01.json', null, Phaser.Tilemap.TILED_JSON);
 
 
         //game.load.spritesheet('player', 'assets/player2.png', 20, 20);
