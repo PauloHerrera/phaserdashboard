@@ -1,9 +1,5 @@
-var fase02State = {
-    preload: function () {
-        game.load.image('cave', 'assets/images/cave/cave_background01.png');   
-    },
+var fase02State = {    
     create: function () {
-
         //MAPA
         //Adiciona o Mapa
         this.map = game.add.tilemap('map');
@@ -42,12 +38,15 @@ var fase02State = {
                 
         hole = game.add.sprite(6100, 610, 'skull_enter');
         hole.enableBody = true;
-
+        
         // Adiciona o teclado
         cursors = game.input.keyboard.createCursorKeys();
+
+        // Adiciona o enter
+        this.spaceKey = game.input.keyboard.addKey(32);
                
         // Insere o Personagem
-        this.player = game.add.sprite(110, game.world.height - 240, 'personagem');
+        this.player = game.add.sprite(110, 300, 'personagem');
        // this.player = game.add.sprite(5900, game.world.height - 240, 'personagem');
 
         game.physics.arcade.enable(this.player);
@@ -58,10 +57,34 @@ var fase02State = {
         this.player.body.collideWorldBounds = true;
         this.layerForeground = this.map.createLayer('Foreground');
         this.layerForeground.resizeWorld();
+        
+        //Cria o que o personagem vai atirar
+        this.createBullets();
 
-        game.camera.follow(this.player);
+        this.enemies = [];
+        this.enemies.push(new Enemies(game, 443, 300, 'flame_red', "1"));
 
-       
+        this.enemies.push(new Enemies(game, 450, 450, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 550, 450, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 650, 450, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 910, 450, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 1100, 450, 'flame_yellow', "1"));
+
+        this.enemies.push(new Enemies(game, 1645, 660, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 1760, 660, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 1900, 660, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 2050, 660, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 2200, 660, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 2320, 660, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 2520, 660, 'flame_red', "1"));
+
+        this.enemies.push(new Enemies(game, 4400, 370, 'flame_yellow', "1"));
+        this.enemies.push(new Enemies(game, 4500, 370, 'flame_red', "1"));
+
+        this.enemies.push(new Enemies(game, 4870, 40, 'flame_red', "1"));
+        this.enemies.push(new Enemies(game, 4970, 40, 'flame_red', "1"));
+        
+        game.camera.follow(this.player);       
 
         //SCORE
         this.scoreText = game.add.text(16, 16, 'Pontos: ' + game.global.score, { fontSize: '32px', fill: '#000' });
@@ -76,17 +99,29 @@ var fase02State = {
 
         game.physics.arcade.collide(this.food, this.layerPlataforms);
         game.physics.arcade.overlap(this.player, this.food, this.collectFood, null, this);
-        
+        game.physics.arcade.collide(this.bullets, this.layerPlataforms, this.killBullet, null, this);
+
         this.movePlayer();
         
         console.log(this.player.position.x);
         console.log(this.player.position.y);
 
+        for (var i = 0; i < this.enemies.length; i++) {
+            game.physics.arcade.collide(this.enemies[i].enemy, this.layerPlataforms);
+            game.physics.arcade.collide(this.player, this.enemies[i].enemy, this.losingLife, null, this);
+            game.physics.arcade.overlap(this.bullets, this.enemies[i].enemy, this.hitEnemy, null, this);
 
-        //if (this.player.position.x > 1640 && this.player.position.x < 1680 && this.player.position.y < 80) {
-        //    this.player.kill();                        
-        //    game.state.add('fase03', fase03State, true);            
-        //}
+            this.moveEnemy(this.enemies[i].enemy);            
+        }
+
+        if (this.spaceKey.isDown) {
+            this.fire();
+        }
+
+        if (this.player.position.x > 6140 && this.player.position.x < 6160 && cursors.up.isDown) {
+            this.player.kill();                        
+            game.state.add('fase03', fase03State, true);            
+        }
     },
     movePlayer: function () {
 
@@ -165,14 +200,89 @@ var fase02State = {
         // Call the 'startMenu' function in 1000ms
         game.time.events.add(1000, this.startMenu, this);
     },
+
     startMenu: function () {
         game.state.start('menu');
+    },
+    moveEnemy: function (a) {
+
+        if (aux <= 150) {
+            a.body.velocity.x = 50;
+            a.animations.play('right');
+        } else {
+            a.body.velocity.x = -50;
+            a.animations.play('left');
+        }
+
+        if (aux == 300) {
+            aux = 1;
+        } else {
+            aux = aux + 1;
+        }
+    },
+    fire: function () {
+
+        if (game.time.now > nextFire && this.bullets.countDead() > 0) {
+            nextFire = game.time.now + fireRate;
+
+            var bullet = this.bullets.getFirstExists(false);
+
+            bullet.reset(this.player.x + 10, this.player.y + 40);
+
+            //bullet.reset(this.player.x, this.player.y);
+            //game.physics.arcade.moveToPointer(bullet, 300);
+
+            if (cursors.left.isDown) {
+                bullet.body.velocity.x = -400;
+            } else {
+                this.player.frame = 5;
+                bullet.body.velocity.x = 400;
+            }
+            bullet.animations.add('turn', [1, 2, 3, 4], 10, true);
+            bullet.animations.play('turn');
+            //bullet.rotation = game.physics.arcade.moveToPointer(bullet, 10000, game.input.activePointer, 500);
+        }
+
+    },
+    hitEnemy: function (a, b) {
+        b.kill();
+        a.kill();
+        this.deadSound.play();
+
+        this.emitter.x = a.x;
+        this.emitter.y = a.y;
+        this.emitter.start(true, 600, null, 15);
+
+        game.global.score += 50;
+        this.scoreText.text = 'Pontos: ' + game.global.score;
+    },
+    killBullet: function (a, b) {
+        a.kill();
+        this.emitter.x = a.x;
+        this.emitter.y = a.y;
+        this.emitter.start(true, 600, null, 10);
+    },
+    createBullets: function () {
+        //  Our bullet group
+        this.bullets = game.add.group();
+        this.bullets.enableBody = true;
+        this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        this.bullets.createMultiple(30, 'bullet', 2, false);
+        this.bullets.setAll('anchor.x', 0.5);
+        this.bullets.setAll('anchor.y', 0.5);
+        this.bullets.setAll('outOfBoundsKill', true);
+        this.bullets.setAll('checkWorldBounds', true);
+
+        // this.bullets.animations.add('turn', [1, 2, 3, 4], 10, true);
     },
     createItens: function () {
         this.food = game.add.group();
         this.food.enableBody = true;
 
         game.add.sprite(705, 300, 'rosquinha03', 0, this.food);
+
+        game.add.sprite(3985, 370, 'rosquinha02', 0, this.food);
+        game.add.sprite(4260, 300, 'rosquinha01', 0, this.food);
 
         game.add.sprite(5245, 370, 'rosquinha03', 0, this.food);
         game.add.sprite(5370, 370, 'rosquinha01', 0, this.food);
@@ -184,18 +294,26 @@ var fase02State = {
         game.add.sprite(2355, 50, 'sandwich', 0, this.food);
         game.add.sprite(2610, 435, 'sandwich', 0, this.food);
 
+        game.add.sprite(5067, 50, 'sandwich', 0, this.food);
+
 
         game.add.sprite(1870, 50, 'frango', 0, this.food);
         game.add.sprite(1970, 50, 'frango', 0, this.food);
-        game.add.sprite(2070, 50, 'frango', 0, this.food);
+        game.add.sprite(2070, 50, 'frango', 0, this.food);    
         game.add.sprite(2170, 50, 'frango', 0, this.food);
 
+        game.add.sprite(4150, 50, 'frango', 0, this.food);
+        game.add.sprite(4250, 50, 'frango', 0, this.food);
+        game.add.sprite(4350, 50, 'frango', 0, this.food);               
 
         game.add.sprite(5115, 370, 'refri', 0, this.food);
         game.add.sprite(1150, 460, 'refri', 0, this.food);
 
         game.add.sprite(1200, 460, 'batata', 0, this.food);
         game.add.sprite(2265, 50, 'batata', 0, this.food);
+
+        game.add.sprite(4645, 475, 'batata', 0, this.food);
+        game.add.sprite(4700, 475, 'batata', 0, this.food);
 
         //game.add.sprite(750, 1000, 'rosquinha02', 0, this.food);
 

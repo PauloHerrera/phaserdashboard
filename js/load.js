@@ -1,15 +1,20 @@
 var loadState = {
     preload: function () {
-        var loadingLabel = game.add.text(game.world.centerX, 150, 'carregando...', { font: '30px Arial', fill: '#ffffff' });
-        loadingLabel.anchor.setTo(0.5, 0.5);        
-        var progressBar = game.add.sprite(game.world.centerX, 200, 'progressBar');
+        var loadingLabel = game.add.text(game.world.centerX, 150, 'Carregando', { font: '30px Arial', fill: '#ffffff' });
+        loadingLabel.anchor.setTo(0.5, 0.5);
+        loadingLabel.alpha = 0;
+        game.add.tween(loadingLabel).to({ alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
 
-        progressBar.anchor.setTo(0.5, 0.5);
+
+        var progressBar = game.add.sprite(game.world.centerX, 200, 'progressBar');
+        progressBar.anchor.setTo(0.5, 0.5);      
+        
         game.load.setPreloadSprite(progressBar);              
 
         //CAREGA ITENS DO JOGO
         game.load.spritesheet('personagem', 'assets/images/personagem.png', 43, 65);
         game.load.spritesheet('personagem2', 'assets/images/personagem.png', 43, 65);
+        
         game.load.spritesheet('mute', 'assets/images/muteButton.png', 28, 22);
         game.load.image('pixel', 'assets/images/pixel.png');
         game.load.image('heart', 'assets/images/heart.png');
@@ -41,6 +46,16 @@ var loadState = {
         game.load.audio('background_music', ['assets/sound/background_music.ogg', 'assets/sound/background_music.mp3']);
         game.load.audio('dead', ['assets/sound/dead.ogg', 'assets/sound/dead.mp3']);
 
+        //Enemies
+        game.load.spritesheet('cook', 'assets/images/cook_large.png', 43, 65);
+        game.load.spritesheet('flame_yellow', 'assets/images/enemies/flame_yellow.png', 48, 64);
+        game.load.spritesheet('flame_blue', 'assets/images/enemies/flame_blue.png', 48, 64);
+        game.load.spritesheet('flame_green', 'assets/images/enemies/flame_green.png', 48, 64);
+        game.load.spritesheet('flame_red', 'assets/images/enemies/flame_red.png', 48, 64);
+        //game.load.spritesheet('cook', 'assets/images/cook_large.png', 43, 65);
+
+        // Comidas que ele ataca
+        game.load.spritesheet('bullet', 'assets/images/itens attack/apple_sprite.png', 24, 24);
 
         // Fase 01   
         game.load.image('nuvens', 'assets/images/nuvens.png');
@@ -49,35 +64,20 @@ var loadState = {
         game.load.image('tree', 'assets/images/tree.png');
         game.load.image('woodPlatform1', 'assets/images/woodPlatform1.png');
         game.load.tilemap('map01', 'assets/images/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-
-
+        
         // Fase Caverna 01
         game.load.image('flame', 'assets/images/cave/flame.png');
         game.load.image('fase_caverna', 'assets/images/cave/fase_caverna.png');
         game.load.image('skull01', 'assets/images/cave/skull01.png');
         game.load.image('skull_enter', 'assets/images/cave/skull_enter.png');
         game.load.image('atocha', 'assets/images/cave/atocha.png');
-
         game.load.tilemap('map', 'assets/images/cave/tilemapCave01.json', null, Phaser.Tilemap.TILED_JSON);
-
-
-        //game.load.spritesheet('player', 'assets/player2.png', 20, 20);
-        //game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
-
-        //game.load.image('enemy', 'assets/enemy.png');
-        //game.load.image('coin', 'assets/coin.png');
-        //game.load.image('wallV', 'assets/wallVertical.png');
-        //game.load.image('wallH', 'assets/wallHorizontal.png');
-        //game.load.image('background', 'assets/background.png');                
-        //game.load.image('pixel', 'assets/pixel.png');               
-
-        //// Sound when the player jumps
-        //game.load.audio('jump', ['assets/jump.ogg', 'assets/jump.mp3']);
-        //// Sound when the player takes a coin
-        //game.load.audio('coin', ['assets/coin.ogg', 'assets/coin.mp3']);
-        //// Sound when the player dies
-        //game.load.audio('dead', ['assets/dead.ogg', 'assets/dead.mp3']);
-
+        
+        // Fase Lava 01
+        game.load.image('lava01', 'assets/images/lava/lava_objetc_01.png');
+        game.load.image('lava_tileset', 'assets/images/lava/lava_tileset.png');
+        game.load.image('platform_lava01_large', 'assets/images/lava/platform_large.png');
+        game.load.tilemap('map_lava_01', 'assets/images/lava/tilemapLava01.json', null, Phaser.Tilemap.TILED_JSON);
         
     },
     create: function () {        
