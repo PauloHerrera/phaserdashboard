@@ -1,8 +1,8 @@
-Player = function (game) {
+Player = function (game,posicaoX,posicaoY) {
 
     this.game = game;
 
-    this.player = game.add.sprite(2000, this.game.world.height - 240, 'personagem');
+    this.player = game.add.sprite(posicaoX, posicaoY, 'personagem');
     this.game.physics.arcade.enable(this.player);
     this.health = 3;
 
@@ -74,6 +74,15 @@ Player.prototype = {
         b.kill();              
         
         this.gameControl.setItemScore(b.key);
+    },
+    collectKeys: function (a, b) {        
+        b.kill();
+
+        // Adiciona o buraco
+        key = game.add.sprite(100, 90, b.key);
+        key.enableBody = true;
+        
+        //this.gameControl.setItemScore(b.key);
     },
     die: function (game) {
         if (!this.player.alive) {

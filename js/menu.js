@@ -60,7 +60,7 @@ var menuState = {
         }
     },
     Start: function () {        
-        game.state.start('fase01');
+        game.state.start('fase04');
 
     },    
     ToggleSound: function () {      

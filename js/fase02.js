@@ -39,7 +39,7 @@ var fase02State = {
         this.layerObjetos.resizeWorld();
 
         // Insere o Personagem
-        this.myPlayer = new Player(game);
+        this.myPlayer = new Player(game, 100, this.game.world.height - 240);
 
         //CRIA OS INIMIGOS              
         this.enemies = [];

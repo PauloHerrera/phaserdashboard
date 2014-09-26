@@ -18,6 +18,7 @@ game.state.add('gameover', gameoverState);
 game.state.add('fase01', fase01State);
 game.state.add('fase02', fase02State);
 game.state.add('fase03', fase03State);
+game.state.add('fase04', fase04State);
 
 
 // Start the 'boot' state

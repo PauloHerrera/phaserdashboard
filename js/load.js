@@ -22,7 +22,7 @@ var loadState = {
 
         //fase 01
         game.load.image('sky', 'assets/images/sky.png');
-        game.load.image('plataform', 'assets/images/platform_wood.png');
+        //game.load.image('plataform', 'assets/images/platform_wood.png');
         game.load.image('ground', 'assets/images/grass.png');
         game.load.image('hole', 'assets/images/role.png');
 
@@ -78,6 +78,16 @@ var loadState = {
         game.load.image('lava_tileset', 'assets/images/lava/lava_tileset.png');
         game.load.image('platform_lava01_large', 'assets/images/lava/platform_large.png');
         game.load.tilemap('map_lava_01', 'assets/images/lava/tilemapLava01.json', null, Phaser.Tilemap.TILED_JSON);
+
+
+         // Fase Labirinto 01        
+        game.load.image('spike40', 'assets/images/labyrinth/spine40x40.png');
+        game.load.image('tilesheet', 'assets/images/labyrinth/tileset_teste.jpg');
+        game.load.tilemap('labyrinth', 'assets/images/labyrinth/tileset_labyrinth.json', null, Phaser.Tilemap.TILED_JSON);
+
+        // keys
+        game.load.image('keyYellow', 'assets/images/keys/keyYellow.png');
+
         
     },
     create: function () {        
