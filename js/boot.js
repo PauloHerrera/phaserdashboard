@@ -11,5 +11,12 @@ var bootState = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         // Start the load state
         game.state.start('load');
+
+        Keyboard.init(game);
+
+        Sound.init();
+
+        game.global.scoreText = game.add.text(16, 10, 'Pontos: ' + game.global.score, { fontSize: '20px', fill: '#fff' });
+        game.global.scoreText.fixedToCamera = true;
     }
 };

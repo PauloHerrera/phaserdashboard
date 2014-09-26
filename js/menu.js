@@ -43,7 +43,7 @@ var menuState = {
 
         // Exibe a pontuação e o recorde
         var textScore = 'Pontuação: ' + game.global.score + '\nRecorde: ' + localStorage.getItem('bestScore');
-        console.log(textScore);
+       
         this.scoreLabel = game.add.text(350, 200, textScore,
         { font: '25px Geo', fill: '#ffffff', align: 'center' });
         this.scoreLabel.anchor.setTo(0.5, 0.5);

@@ -71,7 +71,7 @@ var loadState = {
         game.load.image('skull01', 'assets/images/cave/skull01.png');
         game.load.image('skull_enter', 'assets/images/cave/skull_enter.png');
         game.load.image('atocha', 'assets/images/cave/atocha.png');
-        game.load.tilemap('map', 'assets/images/cave/tilemapCave01.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('map02', 'assets/images/cave/tilemapCave01.json', null, Phaser.Tilemap.TILED_JSON);
         
         // Fase Lava 01
         game.load.image('lava01', 'assets/images/lava/lava_objetc_01.png');

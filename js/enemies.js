@@ -1,6 +1,10 @@
-var Enemies = function (game, positionX, positionY, sprite, index) {
+var Enemies = function (game, positionX, positionY, sprite, index, movement, speedy) {
 
+    //Properties
     this.MoveAux = 0;
+    this.Movement = movement;
+    this.Speedy = speedy;
+    
     this.enemy = game.add.sprite(positionX, positionY, sprite);
     game.physics.arcade.enable(this.enemy);
     this.enemy.body.bounce.y = 0.2;
@@ -12,23 +16,32 @@ var Enemies = function (game, positionX, positionY, sprite, index) {
 
 };
 
+Enemies.prototype = {    
+    move: function () {
+        if (this.MoveAux <= (this.Movement / 2)) {
+            this.enemy.body.velocity.x = this.Speedy;
+            this.enemy.animations.play('right');
+        } else {
+            this.enemy.body.velocity.x = - this.Speedy;
+            this.enemy.animations.play('left');
+        }
 
-Enemies.prototype.move = function () {
-    //var movement = 300;
-    //var speedy = 75;
+        if (this.MoveAux == this.Movement) {
+            this.MoveAux = 1;
+        } else {
+            this.MoveAux = this.MoveAux + 1;
+        }
+    },
+    isHit: function (a, b) {
+        b.kill();
+        a.kill();
+        Sound.dead.play();
 
-    //if (this.MoveAux <= (movement / 2)) {
-    //    this.enemy.body.velocity.x = speedy;
-    //    this.enemy.animations.play('right');
-    //} else {
-    //    this.enemy.body.velocity.x = - speedy;
-    //    this.enemy.animations.play('left');
-    //}
 
-    //if (this.MoveAux == movement) {
-    //    this.MoveAux = 1;
-    //} else {
-    //    this.MoveAux = this.MoveAux + 1;
-    //}
-    alert("Aeeeee!!!");
+        EmitterObj.emitter.x = a.x;
+        EmitterObj.emitter.y = a.y;
+        EmitterObj.emitter.start(true, 600, null, 15);
+
+        this.gameControl.changeScore(50);
+    }
 }

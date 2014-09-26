@@ -104,8 +104,8 @@ var fase03State = {
             // console.log(this.enemies[i]);
         }
 
-        //console.log(this.player.position.x);
-        //console.log(this.player.position.y);
+        console.log(this.player.position.x);
+        console.log(this.player.position.y);
 
         if (this.spaceKey.isDown) {
             this.fire();
