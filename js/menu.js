@@ -17,13 +17,23 @@ var menuState = {
         var tween = game.add.tween(nameLabel);        
         game.add.tween(nameLabel).to({ y: 100 }, 1000).easing(Phaser.Easing.Bounce.Out).start();
         
+
+        if (game.device.desktop) {
+            var textoIniciar = 'aperte a tecla ENTER para começar';
+        }
+        else {
+            var textoIniciar = 'toque na tela para iniciar';
+        }
+
         //START LABEL
-        var startLabel = game.add.text(350, 380, 'aperte a tecla ENTER para começar',            { font: '25px Arial', fill: '#ffffff' });
+        var startLabel = game.add.text(350, 380, textoIniciar,            { font: '25px Arial', fill: '#ffffff' });
         game.add.tween(startLabel).to({ angle: -2 }, 500).to({ angle: 2 }, 500).loop().start();
         startLabel.anchor.setTo(0.5, 0.5);
 
         var enterKey = game.input.keyboard.addKey(13);
         enterKey.onDown.addOnce(this.Start, this);
+
+        game.input.onDown.addOnce(this.Start, this);
 
         this.VerifyScore();
 
@@ -60,7 +70,7 @@ var menuState = {
         }
     },
     Start: function () {        
-        game.state.start('fase04');
+        game.state.start('fase01v2State');
 
     },    
     ToggleSound: function () {      

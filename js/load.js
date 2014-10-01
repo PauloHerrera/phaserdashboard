@@ -22,9 +22,10 @@ var loadState = {
 
         //fase 01
         game.load.image('sky', 'assets/images/sky.png');
-        //game.load.image('plataform', 'assets/images/platform_wood.png');
+        game.load.image('plataform', 'assets/images/platform_wood.png');
         game.load.image('ground', 'assets/images/grass.png');
         game.load.image('hole', 'assets/images/role.png');
+        game.load.image('exit', 'assets/images/exit.png');
 
         //fase 02 - caverna 01
         //game.load.image('cave', 'assets/images/cave/cave_background01.png');
@@ -80,14 +81,35 @@ var loadState = {
         game.load.tilemap('map_lava_01', 'assets/images/lava/tilemapLava01.json', null, Phaser.Tilemap.TILED_JSON);
 
 
-         // Fase Labirinto 01        
+         // Fase Labirinto 04        
         game.load.image('spike40', 'assets/images/labyrinth/spine40x40.png');
         game.load.image('tilesheet', 'assets/images/labyrinth/tileset_teste.jpg');
         game.load.tilemap('labyrinth', 'assets/images/labyrinth/tileset_labyrinth.json', null, Phaser.Tilemap.TILED_JSON);
+        
+
+        // Fase Tutorial
+        game.load.tilemap('tutorial', 'assets/images/labyrinth/tileset_labyrinth_tutorial.json', null, Phaser.Tilemap.TILED_JSON);
+
+        // Fase Labirinto 01 
+        game.load.tilemap('labyrinth02', 'assets/images/labyrinth/tileset_labyrinth_02.json', null, Phaser.Tilemap.TILED_JSON);
 
         // keys
         game.load.image('keyYellow', 'assets/images/keys/keyYellow.png');
+        game.load.image('keyBlue', 'assets/images/keys/keyBlue.png');
+        game.load.image('keyGreen', 'assets/images/keys/keyGreen.png');
 
+        game.load.image('lockBlue', 'assets/images/keys/lock_blue.png');
+        game.load.image('lockYellow', 'assets/images/keys/lock_yellow.png');
+        game.load.image('lockGreen', 'assets/images/keys/lock_green.png');
+
+
+        game.load.image('exitGreen', 'assets/images/keys/exit_green.png');
+
+        
+        // Mobile Buttons
+        game.load.image('jumpButton', 'assets/images/mobile/jumpButton.png');
+        game.load.image('rightButton', 'assets/images/mobile/rightButton.png');
+        game.load.image('leftButton', 'assets/images/mobile/leftButton.png');
         
     },
     create: function () {        

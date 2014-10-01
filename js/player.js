@@ -4,13 +4,15 @@ Player = function (game,posicaoX,posicaoY) {
 
     this.player = game.add.sprite(posicaoX, posicaoY, 'personagem');
     this.game.physics.arcade.enable(this.player);
-    this.health = 3;
+    this.player.health = 3;
 
     this.player.body.bounce.y = 0.2;
     this.player.body.gravity.y = 300;
     this.player.animations.add('left', [0, 1, 2, 3], 10, true);
     this.player.animations.add('right', [5, 6, 7, 8], 10, true);
     this.player.body.collideWorldBounds = true;
+
+    
 
     this.game.camera.follow(this.player);
 
@@ -27,17 +29,20 @@ Player = function (game,posicaoX,posicaoY) {
     this.bulletsFireRate = 300;
     this.bulletsNextFire = 0;   
 
+
+    // Keys Control
+    this.player.keyCount = 0;
+    this.player.keys = [];
+
 }
 
 Player.prototype = {
     move: function () {
-        if (Keyboard.cursorKeys.left.isDown) {
-            this.player.body.velocity.x = -game.global.playerSpeed;
-            this.player.animations.play('left');
+        if (Keyboard.cursorKeys.left.isDown || this.game.global.moveLeft == true) {
+            this.moveLeft();
         }
-        else if (Keyboard.cursorKeys.right.isDown) {
-            this.player.body.velocity.x = game.global.playerSpeed;
-            this.player.animations.play('right');
+        else if (Keyboard.cursorKeys.right.isDown || this.game.global.moveRight == true) {
+            this.moveRight();
         }
         else {
             this.player.body.velocity.x = 0;
@@ -45,10 +50,21 @@ Player.prototype = {
             this.player.frame = 4;
         }
 
-        if (Keyboard.cursorKeys.up.isDown && this.player.body.onFloor()) {
-            if (game.global.sound) Sound.jump.play();
-            this.player.body.velocity.y = -game.global.jumpSize;
-        }
+        if ((Keyboard.cursorKeys.up.isDown || this.game.global.moveJump == true) && this.player.body.onFloor()) {
+            this.jump();
+        }        
+    },
+    moveRight: function (){
+        this.player.body.velocity.x = game.global.playerSpeed;
+        this.player.animations.play('right');
+    },
+    moveLeft: function (){
+        this.player.body.velocity.x = -game.global.playerSpeed;
+        this.player.animations.play('left');
+    },
+    jump: function (){
+        if (game.global.sound) Sound.jump.play();
+        this.player.body.velocity.y = -game.global.jumpSize;
     },
     fire: function () {        
         if (this.game.time.now > this.bulletsNextFire && this.bullets.countDead() > 0)
@@ -75,14 +91,45 @@ Player.prototype = {
         
         this.gameControl.setItemScore(b.key);
     },
-    collectKeys: function (a, b) {        
-        b.kill();
+    collectKeys: function (player, keyCollected) {        
+                            
+        keyCollected.kill();
 
-        // Adiciona o buraco
-        key = game.add.sprite(100, 90, b.key);
-        key.enableBody = true;
+        for (var i = 0; i < player.keys.length; i++) {
+            if (player.keys[i].color == keyCollected.key) {
+                return true;
+            }
+        }
+
+        this.key = this.game.add.image(15 + (player.keyCount * 35), 70, keyCollected.key);
+        this.key.fixedToCamera = true;
+        this.key.enableBody = true;
+        player.keys.push(new KeyControl(keyCollected.key));
+
+        player.keyCount += 1; 
         
-        //this.gameControl.setItemScore(b.key);
+    },
+    removeKey: function (keyColor) {
+
+        //console.log(this.player.keys);
+        //for (var i = 0; i < this.player.keys.length; i++) {
+        //    //console.log(this.player.keys)
+        //    console.log(this.player.keys[i].color);
+        //    if (this.player.keys[i].color == keyColor) {
+        //        this.player.keys.splice(i, 1);
+        //        return;
+        //    }
+        //}
+        //console.log(this.player.keys);
+    },
+    hasKey: function (keyColor) {
+        
+        for (var i = 0; i < this.player.keys.length; i++) {            
+            if (this.player.keys[i].color.replace("key", "") == keyColor) {
+                return true; 
+            }
+        }
+        return false;
     },
     die: function (game) {
         if (!this.player.alive) {
@@ -103,4 +150,8 @@ Player.prototype = {
     startMenu: function () {        
         game.state.start('menu');
     }
+}
+
+KeyControl = function (keyColor) {
+    this.color = keyColor;    
 }

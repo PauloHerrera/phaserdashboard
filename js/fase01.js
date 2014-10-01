@@ -38,6 +38,12 @@ var fase01State = {
 
         // Insere o Personagem
         this.myPlayer = new Player(game, 100, this.game.world.height - 240);
+
+        // Adiciona o buraco
+        this.keys = game.add.group();
+        this.keys.enableBody = true;
+        game.add.sprite(150, game.world.height - 200, 'keyYellow', 0, this.keys);
+        game.add.sprite(200, game.world.height - 200, 'keyYellow', 0, this.keys);
         
         //CRIA OS INIMIGOS              
         this.enemies = [];
@@ -58,7 +64,7 @@ var fase01State = {
         //Add os corações com a saúde do personagem
         this.life = new Array();
         
-        for (j = 0; j < this.myPlayer.health; j++) {
+        for (j = 0; j < this.myPlayer.player.health; j++) {
             this.life[j] = this.add.image(14 + j * 30, 40, 'heart');
             this.life[j].fixedToCamera = true;
         }       
@@ -101,6 +107,8 @@ var fase01State = {
         if (Keyboard.spaceKey.isDown) {
             this.myPlayer.fire();
         }
+
+        game.physics.arcade.overlap(this.myPlayer.player, this.keys, this.myPlayer.collectKeys, null, this);
     },
     killBullet: function (a, b) {
         a.kill();

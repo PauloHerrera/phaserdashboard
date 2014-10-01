@@ -4,6 +4,23 @@ var GameControl = function (game) {
 };
 
 GameControl.prototype = {
+    addMobileButtons: function (game){
+        // Add the jump button
+        this.jumpButton = game.add.sprite(350, 400, 'jumpButton');
+        this.jumpButton.inputEnabled = true;
+        this.jumpButton.fixedToCamera = true;
+        this.jumpButton.alpha = 0.5;
+        // Add the move left button
+        this.leftButton = game.add.sprite(50, 400, 'leftButton');
+        this.leftButton.inputEnabled = true;
+        this.leftButton.fixedToCamera = true;
+        this.leftButton.alpha = 0.5;
+        // Add the move right button
+        this.rightButton = game.add.sprite(130, 400, 'rightButton');
+        this.rightButton.inputEnabled = true;
+        this.rightButton.fixedToCamera = true;
+        this.rightButton.alpha = 0.5;
+    },
     changeScore: function (score) {
         game.global.score += score;
         game.global.scoreText.text = 'Pontos: ' + game.global.score;
@@ -38,7 +55,7 @@ GameControl.prototype = {
 //SOUND 
 function Sound() { }
 
-Sound.init = function () {
+Sound.init = function (game) {
     Sound.jump = game.add.audio('jump');
     Sound.eat = game.add.audio('eat');    
     Sound.dead = game.add.audio('dead');
@@ -49,6 +66,9 @@ function Keyboard() { }
 Keyboard.init = function (game) {
     Keyboard.cursorKeys = game.input.keyboard.createCursorKeys();    
     Keyboard.spaceKey = game.input.keyboard.addKey(32);
+        
+  
+    
 }
 
 //Emitter
