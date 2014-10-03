@@ -1,4 +1,4 @@
-var fase01v2State = {
+var faselab01State = {
     preload: function () {
         //WHY????
         game.load.image('cave', 'assets/images/cave/fase_caverna.png');
@@ -40,22 +40,18 @@ var fase01v2State = {
         this.enemies.push(new Enemies(game, 1500, 690, 'flame_yellow', "0", 130, 150));
         this.enemies.push(new Enemies(game, 1500, 690, 'flame_yellow', "0", 130, 50));
         
-
-
         this.enemies.push(new Enemies(game, 2200, 690, 'flame_yellow', "0", 130, 50));
         this.enemies.push(new Enemies(game, 2400, 690, 'flame_yellow', "0", 130, 50));
         this.enemies.push(new Enemies(game, 2600, 690, 'flame_yellow', "0", 130, 150));
         this.enemies.push(new Enemies(game, 2700, 690, 'flame_yellow', "0", 130, 150));
         this.enemies.push(new Enemies(game, 2800, 690, 'flame_yellow', "0", 130, 150));
         this.enemies.push(new Enemies(game, 2800, 690, 'flame_yellow', "0", 130, 50));
-
-
-
+        
         this.enemies.push(new Enemies(game, 2345, 90, 'flame_yellow', "0", 130, 35));
         this.enemies.push(new Enemies(game, 2955, 370, 'flame_yellow', "0", 130, 50));              
 
         // Insere o Personagem
-        this.myPlayer = new Player(game, 800, this.game.world.height - 130);0
+        this.myPlayer = new Player(game, 100, this.game.world.height - 130);
         
         EmitterObj.init(game);
 
@@ -64,14 +60,9 @@ var fase01v2State = {
         this.layerKillPlayer = this.map.createLayer('kill');      
         this.layerKillPlayer.resizeWorld();
         this.map.setTileIndexCallback(12, this.losingLife, this, this.layerKillPlayer);
-            
-        //Add os corações com a saúde do personagem
-        this.life = new Array();
-
-        for (j = 0; j < this.myPlayer.player.health; j++) {
-            this.life[j] = this.add.image(14 + j * 30, 40, 'heart');
-            this.life[j].fixedToCamera = true;
-        }
+        
+        //Add vida na tela
+        this.myPlayer.addLife();
 
         game.global.scoreText = game.add.text(16, 10, 'Pontos: ' + game.global.score, { fontSize: '20px', fill: '#fff' });
         game.global.scoreText.fixedToCamera = true;
@@ -83,9 +74,7 @@ var fase01v2State = {
         game.add.sprite(655, 130, 'keyGreen', 0, this.keysGame);
         game.add.sprite(3100, 130, 'keyYellow', 0, this.keysGame);
         this.keysGame.setAll('body.immovable', true);
-        //game.add.sprite(595, 240, 'keyYellow', 0, this.keysGame);
-        //game.add.sprite(1915, 350, 'keyBlue', 0, this.keysGame);
-        //
+     
                 
         //Adiciona as fechaduras
         this.lockers = game.add.group();
@@ -93,17 +82,12 @@ var fase01v2State = {
         game.add.sprite(560, 680, 'lockBlue', 0, this.lockers);
         game.add.sprite(1440, 160, 'lockGreen', 0, this.lockers);
         game.add.sprite(1800, 680, 'lockGreen', 0, this.lockers);
-        game.add.sprite(2120, 680, 'lockYellow', 0, this.lockers);
-        //game.add.sprite(1200, 600, 'lockYellow', 0, this.lockers);
-        
+        game.add.sprite(2120, 680, 'lockYellow', 0, this.lockers);               
         this.lockers.setAll('body.immovable', true);
-
-      
-        
+                      
         if (!game.device.desktop) {
             this.addMobileButtons();
-        }
-      
+        }      
     },
     update: function () {
 
@@ -112,13 +96,14 @@ var fase01v2State = {
 
         game.physics.arcade.collide(this.myPlayer.player, this.layerPlataforms);
         game.physics.arcade.collide(this.myPlayer.player, this.layerKillPlayer);
+
         game.physics.arcade.collide(this.myPlayer.player, this.lockers, this.testLock, null, this);
-        
+        game.physics.arcade.overlap(this.myPlayer.player, this.keysGame, this.myPlayer.collectKeys, null, this);
+        game.physics.arcade.overlap(this.myPlayer.player, this.doors, this.openExit, null, this);
+
         game.physics.arcade.collide(this.myPlayer.bullets, this.layerPlataforms, this.killBullet, null, this);
         game.physics.arcade.collide(this.myPlayer.bullets, this.keysGame, this.killBullet, null, this);
-        game.physics.arcade.collide(this.myPlayer.bullets, this.lockers, this.killBullet, null, this);
-                
-        //game.physics.arcade.collide(this.myPlayer.player, this.layerLocks, this.testLock, null, this);              
+        game.physics.arcade.collide(this.myPlayer.bullets, this.lockers, this.killBullet, null, this);                   
 
         for (var i = 0; i < this.enemies.length; i++) {
             game.physics.arcade.collide(this.enemies[i].enemy, this.layerPlataforms);
@@ -127,12 +112,7 @@ var fase01v2State = {
             game.physics.arcade.overlap(this.myPlayer.bullets, this.enemies[i].enemy, this.enemies[i].isHit, null, this);
 
             this.enemies[i].move();
-        }        
-        //console.log(this.myPlayer.player.position.x);
-        //console.log(this.myPlayer.player.position.y);
-
-        game.physics.arcade.overlap(this.myPlayer.player, this.doors, this.openExit, null, this);
-        game.physics.arcade.overlap(this.myPlayer.player, this.keysGame, this.myPlayer.collectKeys, null, this);
+        }                
 
         this.myPlayer.move();
 
@@ -146,10 +126,11 @@ var fase01v2State = {
         
         if (this.myPlayer.hasKey(exitColor)) {
             sprite.kill();
-            game.state.start('fase04', fase04State);
+            game.state.start('faselab02', faselab02State);
         }
     },
     addMobileButtons: function () {
+        console.log("teste");
         // Add the jump button
         this.jumpButton = game.add.sprite(350, 400, 'jumpButton');
         this.jumpButton.inputEnabled = true;
@@ -206,34 +187,8 @@ var fase01v2State = {
             item.kill();
         }
     },
-    losingLife: function (a, b) {
-        this.myPlayer.die(game);
-        ////console.log(this.lifeCount);
-        //this.lifeCount--;
-        //this.life[this.lifeCount].kill();
-
-        //var teste = 0;
-
-        //if (this.cursor.left.isDown || this.wasd.left.isDown) {
-        //    teste = 30;
-        //}
-        //else if (this.cursor.right.isDown || this.wasd.right.isDown) {
-        //    teste = -30;
-        //}
-
-        ////console.log(b);
-        ////console.log(teste);        
-        //var teste2 = a.body.position.x + teste
-        ////console.log(teste2);
-        //a.body.position.x = teste2;
-
-        //if (this.lifeCount == 0) {
-        //    this.playerDie();
-        //} else {
-        //    console.log(this.player.position.x);
-        //    //this.player.position.x = this.player.position.x - 10;
-        //}
-
+    losingLife: function (a, b) {       
+        this.myPlayer.looseLife(a, b, 100, this.game.world.height - 130);
     },
     createItens: function () {
         this.food = game.add.group();

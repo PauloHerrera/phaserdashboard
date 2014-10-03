@@ -22,10 +22,10 @@ game.state.add('faseTutorial', faseTutorialState);
 game.state.add('fase01', fase01State);
 game.state.add('fase02', fase02State);
 game.state.add('fase03', fase03State);
-game.state.add('fase04', fase04State);
+game.state.add('faselab02', faselab02State);
 
 
-game.state.add('fase01v2State', fase01v2State);
+game.state.add('faselab01', faselab01State);
 
 // Start the 'boot' state
 game.state.start('boot');

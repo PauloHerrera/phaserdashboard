@@ -21,18 +21,19 @@ var faseTutorialState = {
         this.map.setCollision(7, true, this.layerPlataforms);
         this.map.setCollision(9, true, this.layerPlataforms);
                
+
         //CRIA OS INIMIGOS              
         this.enemies = [];
-        this.enemies.push(new Enemies(game, 310, 330, 'flame_yellow', "0", 50, 35));
+        this.enemies.push(new Enemies(game, 100, 330, 'flame_yellow', "0", 50, 35));
                 
-        //Adiciona as portas (juntar com as fechaduras???)
+        //Adiciona as portas 
         this.doors = game.add.group();
         this.doors.enableBody = true;
         game.add.sprite(670, game.world.height - 180, 'exitGreen', 0, this.doors);
         this.doors.setAll('body.immovable', true);
 
         // Insere o Personagem
-        this.myPlayer = new Player(game, 800, this.game.world.height - 130);
+        this.myPlayer = new Player(game, 100, this.game.world.height - 130);
         
         EmitterObj.init(game);
 
@@ -116,7 +117,7 @@ var faseTutorialState = {
         console.log(exitColor);
         if (this.myPlayer.hasKey(exitColor)) {
             sprite.kill();
-            game.state.start('fase01v2State', fase01v2State);
+            game.state.start('faselab01', faselab01State);
         }
     },
     addMobileButtons: function () {

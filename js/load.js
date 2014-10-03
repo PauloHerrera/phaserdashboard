@@ -97,6 +97,7 @@ var loadState = {
         game.load.image('keyYellow', 'assets/images/keys/keyYellow.png');
         game.load.image('keyBlue', 'assets/images/keys/keyBlue.png');
         game.load.image('keyGreen', 'assets/images/keys/keyGreen.png');
+        game.load.image('keyPurple', 'assets/images/keys/keyPurple.png');
 
         game.load.image('lockBlue', 'assets/images/keys/lock_blue.png');
         game.load.image('lockYellow', 'assets/images/keys/lock_yellow.png');
@@ -104,6 +105,7 @@ var loadState = {
 
 
         game.load.image('exitGreen', 'assets/images/keys/exit_green.png');
+        game.load.image('exitPurple', 'assets/images/keys/exit_purple.png');
 
         
         // Mobile Buttons

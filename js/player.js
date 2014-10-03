@@ -1,18 +1,21 @@
 Player = function (game,posicaoX,posicaoY) {
-
     this.game = game;
 
     this.player = game.add.sprite(posicaoX, posicaoY, 'personagem');
     this.game.physics.arcade.enable(this.player);
-    this.player.health = 3;
+
+    console.log(this.player.health);
+
+    this.player.health = this.player.health == 1 ? 3 : this.player.health;
+    this.player.life = new Array();
+
+    this.player.ishurt = false;// Controla quando é atingido
 
     this.player.body.bounce.y = 0.2;
     this.player.body.gravity.y = 300;
     this.player.animations.add('left', [0, 1, 2, 3], 10, true);
     this.player.animations.add('right', [5, 6, 7, 8], 10, true);
-    this.player.body.collideWorldBounds = true;
-
-    
+    this.player.body.collideWorldBounds = true;       
 
     this.game.camera.follow(this.player);
 
@@ -29,7 +32,6 @@ Player = function (game,posicaoX,posicaoY) {
     this.bulletsFireRate = 300;
     this.bulletsNextFire = 0;   
 
-
     // Keys Control
     this.player.keyCount = 0;
     this.player.keys = [];
@@ -38,8 +40,10 @@ Player = function (game,posicaoX,posicaoY) {
 
 Player.prototype = {
     move: function () {
+        //console.log(this.game.global.moveLeft);
         if (Keyboard.cursorKeys.left.isDown || this.game.global.moveLeft == true) {
             this.moveLeft();
+            console.log("teste2");
         }
         else if (Keyboard.cursorKeys.right.isDown || this.game.global.moveRight == true) {
             this.moveRight();
@@ -65,6 +69,13 @@ Player.prototype = {
     jump: function (){
         if (game.global.sound) Sound.jump.play();
         this.player.body.velocity.y = -game.global.jumpSize;
+    },
+    addLife: function (){
+        //Add os corações com a saúde do personagem       
+        for (j = 0; j < this.player.health; j++) {
+            this.player.life[j] = this.game.add.image(14 + j * 30, 40, 'heart');
+            this.player.life[j].fixedToCamera = true;
+        }
     },
     fire: function () {        
         if (this.game.time.now > this.bulletsNextFire && this.bullets.countDead() > 0)
@@ -131,20 +142,45 @@ Player.prototype = {
         }
         return false;
     },
-    die: function (game) {
+    looseLife: function (sprite, enemy, x, y){
+
+        if (!this.player.ishurt) {
+            this.player.ishurt = true;
+
+            this.player.health -= 1;
+            this.player.life[this.player.health].kill();
+            console.log(this.player.life)
+
+            if (this.player.health == 0) {
+                this.die();
+            }
+            
+            game.time.events.add(1000, this.backToStart, this); 
+            this.player.body.position.x = x;
+            this.player.body.position.y = y;
+
+        }
+       
+    },
+    backToStart: function (positionX, positionY){
+
+
+        this.player.ishurt = false;
+    },
+    die: function () {
         if (!this.player.alive) {
             return;
         }
 
         this.player.kill();
-        game.global.music.stop();
+        this.game.global.music.stop();
         Sound.dead.play();
         
         EmitterObj.emitter.x = this.player.x;
         EmitterObj.emitter.y = this.player.y;
         EmitterObj.emitter.start(true, 600, null, 15);
         
-        game.time.events.add(1000, this.startMenu, this);
+        this.game.time.events.add(1000, this.startMenu, this);
 
     },
     startMenu: function () {        
